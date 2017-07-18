@@ -43,8 +43,8 @@ func (p IPPacket) Version() int {
 	return int(p[0] >> 4)
 }
 
-// GetIP get the source IP, nil for invalid IPPacket
-func (p IPPacket) GetIP(t IPType) (net.IP, error) {
+// IP get the source IP, nil for invalid IPPacket
+func (p IPPacket) IP(t IPType) (net.IP, error) {
 	switch p.Version() {
 	case 4:
 		{

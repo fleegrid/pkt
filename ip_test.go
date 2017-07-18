@@ -20,7 +20,7 @@ func TestIPPacket4(t *testing.T) {
 	p[18] = 0x00
 	p[19] = 0x02
 
-	ip, err := p.GetIP(SourceIP)
+	ip, err := p.IP(SourceIP)
 	if err != nil {
 		t.Errorf("Failed to get SourceIP: %v", err)
 	}
@@ -28,7 +28,7 @@ func TestIPPacket4(t *testing.T) {
 		t.Errorf("bad SourceIP: %v", ip.String())
 	}
 
-	ip, err = p.GetIP(DestinationIP)
+	ip, err = p.IP(DestinationIP)
 	if err != nil {
 		t.Errorf("Failed to get DestinationIP: %v", err)
 	}
@@ -63,7 +63,7 @@ func TestIPPacket6(t *testing.T) {
 	p[24] = 0xfd
 	p[39] = 0x02
 
-	ip, err := p.GetIP(SourceIP)
+	ip, err := p.IP(SourceIP)
 	if err != nil {
 		t.Errorf("Failed to get SourceIP: %v", err)
 	}
@@ -71,7 +71,7 @@ func TestIPPacket6(t *testing.T) {
 		t.Errorf("bad SourceIP: %v", ip.String())
 	}
 
-	ip, err = p.GetIP(DestinationIP)
+	ip, err = p.IP(DestinationIP)
 	if err != nil {
 		t.Errorf("Failed to get DestinationIP: %v", err)
 	}
