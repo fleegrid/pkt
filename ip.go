@@ -27,12 +27,8 @@ const IPv4PacketHeadLen = 20
 const IPv6PacketHeadLen = 40
 
 var (
-	// ErrIPPacketTooShort IPPacket is too short for IPv4 or IPv6
-	ErrIPPacketTooShort = errors.New("IPPacket is too short")
 	// ErrIPPacketBadVersion IPPacket version not supported
 	ErrIPPacketBadVersion = errors.New("IPPacket bad version")
-	// ErrIPInvalid IP is invalid
-	ErrIPInvalid = errors.New("IP invalid")
 )
 
 // Version returns IPPacket version, 4 or 6, 0 for empty IPPacket
@@ -49,7 +45,7 @@ func (p IPPacket) IP(t IPType) (net.IP, error) {
 	case 4:
 		{
 			if len(p) < IPv4PacketHeadLen {
-				return nil, ErrIPPacketTooShort
+				return nil, ErrTooShort
 			}
 			ip := make(net.IP, 4)
 			if t == SourceIP {
@@ -62,7 +58,7 @@ func (p IPPacket) IP(t IPType) (net.IP, error) {
 	case 6:
 		{
 			if len(p) < IPv6PacketHeadLen {
-				return nil, ErrIPPacketTooShort
+				return nil, ErrTooShort
 			}
 			ip := make(net.IP, 16)
 			if t == SourceIP {
@@ -85,10 +81,10 @@ func (p IPPacket) SetIP(t IPType, ip net.IP) error {
 	case 4:
 		{
 			if len(p) < IPv4PacketHeadLen {
-				return ErrIPPacketTooShort
+				return ErrTooShort
 			}
 			if len(ip) < net.IPv4len {
-				return ErrIPInvalid
+				return ErrBadFormat
 			}
 			if t == SourceIP {
 				copy(p[12:16], ip[len(ip)-net.IPv4len:])
@@ -100,10 +96,10 @@ func (p IPPacket) SetIP(t IPType, ip net.IP) error {
 	case 6:
 		{
 			if len(p) < IPv6PacketHeadLen {
-				return ErrIPPacketTooShort
+				return ErrTooShort
 			}
 			if len(ip) < net.IPv6len {
-				return ErrIPInvalid
+				return ErrBadFormat
 			}
 
 			if t == SourceIP {
@@ -126,14 +122,14 @@ func (p IPPacket) Length() (int, error) {
 	case 4:
 		{
 			if len(p) < 4 {
-				return -1, ErrIPPacketTooShort
+				return -1, ErrTooShort
 			}
 			return int(p[2])<<4 + int(p[3]), nil
 		}
 	case 6:
 		{
 			if len(p) < 6 {
-				return -1, ErrIPPacketTooShort
+				return -1, ErrTooShort
 			}
 			return int(p[4])<<4 + int(p[5]) + IPv6PacketHeadLen, nil
 		}
