@@ -154,3 +154,13 @@ func TestReadIPPacket6(t *testing.T) {
 		t.Errorf("failed to determine packet start: len(p) = %v", l)
 	}
 }
+
+func TestChecksum(t *testing.T) {
+	// Source: https://en.wikipedia.org/wiki/IPv4_header_checksum
+	p := IPPacket{0x45, 0x00, 0x00, 0x73, 0x00, 0x00, 0x40, 0x00, 0x40, 0x11, 0x00, 0x00, 0xc0, 0xa8, 0x00, 0x01,
+		0xc0, 0xa8, 0x00, 0xc7}
+	p.GenerateChecksum()
+	if p[10] != 0xb8 || p[11] != 0x61 {
+		t.Errorf("failed to create checksum: 0x%02x 0x%02x", p[10], p[11])
+	}
+}

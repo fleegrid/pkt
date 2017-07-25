@@ -91,6 +91,7 @@ func (p IPPacket) SetIP(t IPType, ip net.IP) error {
 			} else {
 				copy(p[16:20], ip[len(ip)-net.IPv4len:])
 			}
+			p.GenerateChecksum()
 			return nil
 		}
 	case 6:
@@ -114,6 +115,25 @@ func (p IPPacket) SetIP(t IPType, ip net.IP) error {
 			return ErrIPPacketBadVersion
 		}
 	}
+}
+
+// GenerateChecksum generate checksum, IPv4 only
+func (p IPPacket) GenerateChecksum() error {
+	if p.Version() == 4 {
+		if len(p) < IPv4PacketHeadLen {
+			return ErrTooShort
+		}
+		sum := uint32(0)
+		for i := 0; i < IPv4PacketHeadLen; i += 2 {
+			if i != 10 {
+				sum += uint32(p[i])<<8 + uint32(p[i+1])
+			}
+		}
+		chksum := ^(uint16(sum) + uint16(sum>>16))
+		p[10] = byte(chksum >> 8)
+		p[11] = byte(chksum)
+	}
+	return nil
 }
 
 // Length get the length of IPPacket
